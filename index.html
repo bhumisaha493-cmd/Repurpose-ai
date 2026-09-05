@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAPPY TEACHERS DAY ✨</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://jsdelivr.net"></script>
+    <!-- Premium Google Fonts for Gen Z typography -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cabinet+Grotesk:wght@900&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FDFBF7; /* Cozy warm oatmeal background */
+        }
+        .huge-title {
+            font-family: 'Cabinet Grotesk', sans-serif;
+            font-weight: 900;
+            line-height: 0.85;
+            letter-spacing: -0.04em;
+        }
+        /* Custom floating micro-animations for stickers */
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+        }
+        @keyframes float-reverse {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(12px) rotate(-4deg); }
+        }
+        .sticker-1 { animation: float-slow 6s ease-in-out infinite; }
+        .sticker-2 { animation: float-reverse 7s ease-in-out infinite; }
+        .sticker-3 { animation: float-slow 5s ease-in-out infinite 1s; }
+        .sticker-4 { animation: float-reverse 8s ease-in-out infinite 0.5s; }
+    </style>
+</head>
+<body class="min-h-screen w-full overflow-hidden flex flex-col justify-center items-center relative p-4 select-none">
+
+    <!-- Cozy Grid Pattern Overlay -->
+    <div class="absolute inset-0 opacity-[0.04] pointer-events-none" style="background-image: radial-gradient(#292524 1.5px, transparent 1.5px); background-size: 32px 32px;"></div>
+
+    <!-- IMMERSIVE FLOATING STICKER CHAOS (Gen Z Cozy Palette) -->
+    <!-- These float around the screen layer just like the emoji wall in your reference link -->
+    <div class="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+        <!-- Top Left Cluster -->
+        <div class="sticker-1 absolute top-[12%] left-[10%] text-4xl md:text-6xl bg-amber-100 p-3 rounded-2xl border-2 border-stone-900 shadow-[3px_3px_0px_0px_rgba(41,37,36,1)]">☕</div>
+        <div class="sticker-2 absolute top-[28%] left-[5%] text-3xl md:text-4xl bg-rose-100 p-2.5 rounded-xl border border-stone-900 rotate-12">🎧</div>
+        <div class="sticker-3 absolute top-[8%] left-[25%] text-2xl bg-cream border border-stone-400 px-3 py-1 rounded-full text-stone-700 font-bold shadow-sm">#best-mentor</div>
+
+        <!-- Top Right Cluster -->
+        <div class="sticker-4 absolute top-[15%] right-[8%] text-5xl md:text-6xl bg-emerald-100 p-3 rounded-2xl border-2 border-stone-900 shadow-[3px_3px_0px_0px_rgba(41,37,36,1)]">-0.0ms</div>
+        <div class="sticker-1 absolute top-[32%] right-[12%] text-3xl md:text-4xl bg-orange-100 p-2.5 rounded-xl border border-stone-900 -rotate-12">🎨</div>
+        <div class="sticker-2 absolute top-[6%] right-[22%] text-4xl">✨</div>
+
+        <!-- Bottom Left Cluster -->
+        <div class="sticker-3 absolute bottom-[18%] left-[12%] text-4xl md:text-5xl bg-blue-100 p-3 rounded-2xl border-2 border-stone-900 shadow-[3px_3px_0px_0px_rgba(41,37,36,1)]">💻</div>
+        <div class="sticker-4 absolute bottom-[8%] left-[6%] text-3xl">💖</div>
+        <div class="sticker-1 absolute bottom-[30%] left-[22%] text-2xl bg-stone-900 text-stone-100 px-4 py-1.5 rounded-full font-mono text-xs">git commit -m "thanks"</div>
+
+        <!-- Bottom Right Cluster -->
+        <div class="sticker-2 absolute bottom-[15%] right-[10%] text-4xl md:text-5xl bg-purple-100 p-3 rounded-2xl border-2 border-stone-900 shadow-[3px_3px_0px_0px_rgba(41,37,36,1)]">📚</div>
+        <div class="sticker-3 absolute bottom-[28%] right-[5%] text-3xl md:text-4xl bg-yellow-100 p-2.5 rounded-xl border border-stone-900 rotate-6">🍿</div>
+        <div class="sticker-4 absolute bottom-[8%] right-[24%] text-4xl">🌱</div>
+    </div>
+
+    <!-- MAIN TYPOGRAPHY STRUCTURE (Stacked precisely like the reference site) -->
+    <main class="text-center z-0 flex flex-col justify-center items-center pointer-events-none select-none max-w-5xl">
+        <h1 class="huge-title text-[14vw] md:text-[11vw] text-stone-900 tracking-tighter uppercase block">
+            HAPPY
+        </h1>
+        <h1 class="huge-title text-[14vw] md:text-[11vw] text-rose-500/90 tracking-tighter uppercase block my-2 md:my-0">
+            TEACHERS
+        </h1>
+        <h1 class="huge-title text-[14vw] md:text-[11vw] text-stone-900 tracking-tighter uppercase block relative">
+            DAY
+            <!-- Small integrated sub-text element -->
+            <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs md:text-sm font-bold tracking-widest text-stone-400 font-mono block w-max">
+                [ BUILD_VERSION_2026 // FROM_YOUR_STUDENTS ]
+            </span>
+        </h1>
+    </main>
+
+    <!-- INTERACTIVE BOTTOM DRAWER (Clickable note trigger) -->
+    <div class="absolute bottom-6 z-30 w-full max-w-xs px-4">
+        <button onclick="toggleThankYouNote()" class="w-full py-3 bg-stone-900 text-amber-50 font-bold rounded-xl border-2 border-stone-900 shadow-[4px_4px_0px_0px_rgba(217,119,6,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all cursor-pointer text-center text-sm tracking-wide">
+            Open Message Box 📬
+        </button>
+    </div>
+
+    <!-- MODAL POPUP FOR PERSONALIZED NOTE -->
+    <div id="note-modal" class="hidden fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white border-2 border-stone-900 w-full max-w-sm rounded-2xl p-6 shadow-[8px_8px_0px_0px_rgba(41,37,36,1)] transform scale-95 transition-transform duration-200">
+            <div class="flex justify-between items-start mb-4">
+                <span class="text-xs font-mono uppercase bg-amber-100 text-amber-900 px-2.5 py-1 rounded-md font-bold">✨ Console.log()</span>
+                <button onclick="toggleThankYouNote()" class="text-stone-400 hover:text-stone-900 font-bold text-lg cursor-pointer">✕</button>
+            </div>
+            <h3 class="text-xl font-black text-stone-900">Hey Prof,</h3>
+            <p class="text-stone-600 text-sm mt-3 leading-relaxed font-medium">
+                Thank you for turning complex code syntax stacks into easy learning loops, keeping the classroom vibes immaculately cozy, and never failing to debug our messy runtimes. We appreciate you massively! ☕🖥️
+            </p>
+            <div class="mt-5 border-t border-stone-100 pt-4 text-right">
+                <span class="text-xs font-mono text-stone-400 font-bold">- Your Favourite Dev Batch</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleThankYouNote() {
+            const modal = document.getElementById('note-modal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
+
