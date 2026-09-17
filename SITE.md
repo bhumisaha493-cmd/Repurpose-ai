@@ -73,3 +73,16 @@ passed to the live host by `bun run go-live` — so the same code works in the p
 and in production. If you connect the database _after_ going live, re-run
 `bun run go-live` so production picks up `DATABASE_URL`. One database serves both the
 preview and the live site.
+
+## Environment variables
+
+- `ADMIN_PASSWORD` (optional) — the password accepted by the in-app "Admin Login"
+  form that unlocks unlimited generations. Verification happens **server-side** in
+  `src/lib/admin.ts` (`verifyAdminPassword`, a `createServerFn`), so the password is
+  never part of the JavaScript the browser downloads.
+  - **Set** → the submitted password must match it exactly (`bun run go-live`
+    forwards it to Vercel when it's present in the sandbox environment; you can also
+    set it directly in the Vercel project's Environment Variables).
+  - **Unset/empty** → falls back to the built-in default so the preview works with
+    no setup. Set it before showing the app to real users.
+

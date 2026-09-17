@@ -5,6 +5,7 @@ import {
   type MarketingResult,
 } from "~/lib/engine";
 import { translateSummaryLLM } from "~/lib/llm-translate";
+import { verifyAdminPassword } from "~/lib/admin";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -143,7 +144,9 @@ const ICONS = {
 };
 
 const FREE_LIMIT = 2;
-const ADMIN_PASSWORD = "UnlockAI786";
+// NOTE: the admin password is intentionally NOT stored here. Verification runs
+// server-side in ~/lib/admin.ts against process.env.ADMIN_PASSWORD, so no
+// plaintext password is ever shipped in the client bundle.
 const KEY_COUNT = "repurposeai_usage";
 const KEY_UNLOCKED = "repurposeai_unlocked";
 const KEY_HISTORY = "repurposeai_history";
@@ -246,6 +249,7 @@ function Home() {
   const [adminPass, setAdminPass] = useState("");
   const [adminError, setAdminError] = useState<string | null>(null);
   const [adminSuccess, setAdminSuccess] = useState(false);
+  const [adminChecking, setAdminChecking] = useState(false);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const { copied, copy } = useCopy();
   const trial = useTrial();
@@ -357,15 +361,27 @@ function Home() {
     }, 600);
   };
 
-  const handleAdminSubmit = (e: FormEvent) => {
+  const handleAdminSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (adminPass === ADMIN_PASSWORD) {
-      trial.unlock();
-      setAdminSuccess(true);
-      setAdminError(null);
-      setAdminPass("");
-    } else {
+    if (adminChecking) return;
+    setAdminChecking(true);
+    setAdminError(null);
+    try {
+      // Verified server-side (createServerFn) against ADMIN_PASSWORD; the
+      // password itself never exists in the client bundle.
+      const { ok } = await verifyAdminPassword({ data: { password: adminPass } });
+      if (ok) {
+        trial.unlock();
+        setAdminSuccess(true);
+        setAdminError(null);
+        setAdminPass("");
+      } else {
+        setAdminError("Incorrect password. Please try again.");
+      }
+    } catch {
       setAdminError("Incorrect password. Please try again.");
+    } finally {
+      setAdminChecking(false);
     }
   };
 
@@ -747,9 +763,10 @@ function Home() {
                 />
                 <button
                   type="submit"
-                  className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300"
+                  disabled={adminChecking}
+                  className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300"
                 >
-                  Unlock
+                  {adminChecking ? "Unlocking…" : "Unlock"}
                 </button>
                 <button
                   type="button"
@@ -828,9 +845,10 @@ function Home() {
                   <div className="flex items-center gap-2">
                     <button
                       type="submit"
-                      className="rounded-xl bg-gray-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300"
+                      disabled={adminChecking}
+                      className="rounded-xl bg-gray-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300"
                     >
-                      Unlock
+                      {adminChecking ? "Unlocking…" : "Unlock"}
                     </button>
                     <button
                       type="button"
