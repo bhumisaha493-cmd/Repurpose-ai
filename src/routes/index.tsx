@@ -5,6 +5,7 @@ import {
   type MarketingResult,
 } from "~/lib/engine";
 import { translateSummaryLLM } from "~/lib/llm-translate";
+import { refinePackageLLM } from "~/lib/package-llm";
 import { verifyAdminPassword } from "~/lib/admin";
 
 export const Route = createFileRoute("/")({
@@ -244,11 +245,11 @@ function Home() {
   const [result, setResult] = useState<MarketingResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [translationsLoading, setTranslationsLoading] = useState(false);
+  const [refiningPackage, setRefiningPackage] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [adminOpen, setAdminOpen] = useState(false);
   const [adminPass, setAdminPass] = useState("");
   const [adminError, setAdminError] = useState<string | null>(null);
-  const [adminSuccess, setAdminSuccess] = useState(false);
   const [adminChecking, setAdminChecking] = useState(false);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const { copied, copy } = useCopy();
@@ -290,6 +291,18 @@ function Home() {
       const next = prev.map((h) =>
         h.id === id ? { ...h, result: { ...h.result, translations } } : h,
       );
+      saveHistoryList(next);
+      return next;
+    });
+  };
+
+  /** Keep the saved history entry in sync with the AI-refined package. */
+  const updateHistoryRefined = (
+    id: string,
+    refined: Pick<MarketingResult, "summary" | "takeaways" | "social">,
+  ) => {
+    setHistory((prev) => {
+      const next = prev.map((h) => (h.id === id ? { ...h, result: { ...h.result, ...refined } } : h));
       saveHistoryList(next);
       return next;
     });
@@ -358,6 +371,37 @@ function Home() {
           /* translation failed — keep the dictionary fallback */
         })
         .finally(() => setTranslationsLoading(false));
+
+      // Kick off the optional AI final-edit pass. It reviews the package and
+      // returns a strictly non-repetitive version of summary/takeaways/social.
+      // On a missing key or any failure it returns null and the deterministic
+      // engine output (which already satisfies the same rules) stays on screen.
+      setRefiningPackage(true);
+      const draft = {
+        summary: pkg.summary,
+        takeaways: pkg.takeaways,
+        keywords: pkg.keywords,
+        social: pkg.social,
+      };
+      refinePackageLLM({ data: { text, draft } })
+        .then((refined) => {
+          if (!refined) return;
+          const applied: Pick<MarketingResult, "summary" | "takeaways" | "social"> = {
+            summary: refined.summary,
+            takeaways: refined.takeaways,
+            social: refined.social,
+          };
+          setResult((r) => {
+            // Ignore a late response for a package that is no longer on screen.
+            if (!r || r.summary[0] !== pkg.summary[0]) return r;
+            return { ...r, ...applied };
+          });
+          updateHistoryRefined(entryId, applied);
+        })
+        .catch(() => {
+          /* refinement failed — keep the engine package */
+        })
+        .finally(() => setRefiningPackage(false));
     }, 600);
   };
 
@@ -372,7 +416,6 @@ function Home() {
       const { ok } = await verifyAdminPassword({ data: { password: adminPass } });
       if (ok) {
         trial.unlock();
-        setAdminSuccess(true);
         setAdminError(null);
         setAdminPass("");
       } else {
@@ -499,6 +542,13 @@ function Home() {
       {/* Results */}
       {result && (
         <main className="mx-auto max-w-4xl space-y-5 px-5 pb-20">
+          {/* AI final-edit pass indicator (only while it is running) */}
+          {refiningPackage && (
+            <p className="flex items-center gap-2 rounded-xl bg-indigo-50 px-4 py-3 text-sm font-medium text-indigo-700 ring-1 ring-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-500/20">
+              <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent dark:border-indigo-400" />
+              Refining package with AI — removing repeated lines across sections…
+            </p>
+          )}
           {/* Executive Summary */}
           <SectionCard
             title="Executive Summary"
@@ -733,7 +783,6 @@ function Home() {
             onClick={() => {
               setAdminOpen(true);
               setAdminError(null);
-              setAdminSuccess(false);
             }}
             className="rounded-lg px-3 py-1 text-xs font-medium text-gray-400 underline-offset-2 hover:text-gray-600 hover:underline dark:text-gray-600 dark:hover:text-gray-400"
           >
@@ -823,7 +872,6 @@ function Home() {
                   onClick={() => {
                     setAdminOpen(true);
                     setAdminError(null);
-                    setAdminSuccess(false);
                   }}
                   className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-5 py-2.5 text-sm font-bold text-indigo-700 transition hover:bg-indigo-100 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-300 dark:hover:bg-indigo-500/20"
                 >

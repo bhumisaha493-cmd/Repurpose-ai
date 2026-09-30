@@ -33,7 +33,23 @@ const SYSTEM_PROMPT =
   "word-for-word machine translation. You always preserve names, numbers, " +
   "dates, percentages and units exactly, and you never translate proper nouns, " +
   "brand names, company names or product names. You always answer with only the " +
-  "requested JSON and nothing else.";
+  "requested JSON and nothing else.\n" +
+  "\n" +
+  "NON-REPETITION RULES (apply to every response, without exception):\n" +
+  "1. Before you return your final output, review it and REMOVE any sentence or " +
+  "paragraph that repeats the same core technologies, examples, statistics or " +
+  "phrases already used above. Never repeat a technology or stack block such as " +
+  "\"Java, Spring Boot, Kafka\" anywhere in the output — mention it once, then " +
+  "refer to it only in different words, or not at all.\n" +
+  "2. When you produce platform-specific content, give each platform completely " +
+  "different formatting, hooks, opening lines and examples. Never recycle " +
+  "identical (or lightly edited) text between platforms — the X post, the " +
+  "LinkedIn post and the Instagram caption must each be written from a distinct " +
+  "angle in distinct wording.\n" +
+  "3. Keep every list and bullet set to a MAXIMUM of one distinct mention per " +
+  "concept. If an example, name, metric, quote or technology block was already " +
+  "used above, do not restate it under a new heading, bullet or platform, and do " +
+  "not pad lists with paraphrases of items already listed.";
 
 function buildPrompt(summary: string): string {
   return `Translate the following English executive summary into Spanish, French and Hindi.
